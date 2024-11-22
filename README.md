@@ -2,6 +2,8 @@
 
 A modern, AI-powered recipe generation web application that creates personalized recipes with images and learning resources. Built with FastAPI, OpenAI GPT, and a responsive web interface.
 
+![AI Food Recipe Assistant Demo](images/image.png)
+
 ## 🌟 Features
 
 - **AI-Powered Recipe Generation**: Utilizes OpenAI GPT-3.5 to create detailed, personalized recipes
