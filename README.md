@@ -138,7 +138,7 @@ Generates a new recipe with image
 
 ## 📝 License
 
-MIT License - feel free to use this project for learning and development!
+[MIT License](LICENSE) - feel free to use this project for learning and development!
 
 ## 🤝 Contributing
 
