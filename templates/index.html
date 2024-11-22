@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Recipe Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        .recipe-content {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            max-width: none;
+        }
+
+        .recipe-content h3 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .recipe-content blockquote {
+            background-color: #f7fafc;
+            border-left: 4px solid #4299e1;
+            padding: 1rem 1.25rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: #4a5568;
+        }
+
+        .recipe-content ul {
+            list-style-type: disc;
+            margin: 1.25rem 0;
+            padding-left: 2rem;
+        }
+
+        .recipe-content ol {
+            list-style-type: decimal;
+            margin: 1.25rem 0;
+            padding-left: 2rem;
+        }
+
+        .recipe-content ol ol {
+            list-style-type: lower-alpha;
+            margin: 0.5rem 0;
+        }
+
+        .recipe-content li {
+            margin: 0.5rem 0;
+            padding-left: 0.5rem;
+        }
+
+        .recipe-content p {
+            margin: 1.25rem 0;
+        }
+
+        .recipe-content strong {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        /* Style nutritional information in a grid */
+        .recipe-content h3:last-of-type+ul {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            background-color: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+            list-style-type: none;
+        }
+
+        .recipe-content h3:last-of-type+ul li {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <div x-data="{
+        query: '',
+        dietPreference: '',
+        cuisineType: '',
+        loading: false,
+        recipe: null,
+        error: null,
+        
+        formatRecipe(text) {
+            if (!text) return '';
+            marked.setOptions({
+                gfm: true,
+                breaks: true,
+                headerIds: true,
+                smartLists: true,
+                smartypants: true,
+                xhtml: true,
+                renderer: new marked.Renderer()
+            });
+            return marked.parse(text);
+        },
+        
+        async getRecipe() {
+            if (!this.query.trim()) {
+                this.error = 'Please enter a recipe query';
+                return;
+            }
+
+            this.loading = true;
+            this.error = null;
+            this.recipe = null;
+
+            const requestData = {
+                query: this.query.trim(),
+                diet_preference: this.dietPreference || null,
+                cuisine_type: this.cuisineType || null
+            };
+            
+            console.log('Sending request:', requestData);
+
+            try {
+                const response = await fetch('/recipe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                const data = await response.json();
+                console.log('Received response:', data);
+
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Failed to generate recipe');
+                }
+
+                this.recipe = data;
+            } catch (error) {
+                console.error('Error:', error);
+                this.error = error.message;
+            } finally {
+                this.loading = false;
+            }
+        },
+        isValidUrl(string) {
+            try {
+                const url = new URL(string);
+                return url.protocol === 'http:' || url.protocol === 'https:';
+            } catch (_) {
+                return false;
+            }
+        },
+        validateAndOpenUrl(url) {
+            if (this.isValidUrl(url)) {
+                fetch(url, { method: 'HEAD', mode: 'no-cors' })
+                    .then(() => window.open(url, '_blank'))
+                    .catch(() => console.log('Invalid or inaccessible URL'));
+            }
+        }
+    }" class="container mx-auto px-4 py-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">AI Recipe Assistant</h1>
+            <p class="text-gray-600">Get delicious recipes with images and cooking resources</p>
+        </header>
+
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6 mb-8">
+            <form @submit.prevent="getRecipe" class="space-y-4">
+                <div>
+                    <label for="query" class="block text-gray-700 mb-2">What would you like to cook?</label>
+                    <input type="text" id="query" x-model.trim="query" class="w-full p-2 border rounded-md" placeholder="e.g., Chocolate chip cookies" required minlength="1">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="diet" class="block text-gray-700 mb-2">Dietary Preference</label>
+                        <select id="diet" x-model="dietPreference" class="w-full p-2 border rounded-md">
+                            <option value="">Any</option>
+                            <option value="vegetarian">Vegetarian</option>
+                            <option value="vegan">Vegan</option>
+                            <option value="gluten-free">Gluten-free</option>
+                            <option value="keto">Keto</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="cuisine" class="block text-gray-700 mb-2">Cuisine Type</label>
+                        <select id="cuisine" x-model="cuisineType" class="w-full p-2 border rounded-md">
+                            <option value="">Any</option>
+                            <option value="italian">Italian</option>
+                            <option value="mexican">Mexican</option>
+                            <option value="indian">Indian</option>
+                            <option value="chinese">Chinese</option>
+                            <option value="japanese">Japanese</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" :disabled="loading || !query.trim()">
+                    <template x-if="!loading">
+                        <span>Get Recipe</span>
+                    </template>
+                    <template x-if="loading">
+                        <div class="flex items-center justify-center">
+                            <svg class="animate-spin h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span>Generating Recipe...</span>
+                        </div>
+                    </template>
+                </button>
+            </form>
+        </div>
+
+        <!-- Error Message -->
+        <div x-show="error" x-transition class="max-w-2xl mx-auto bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-8 rounded" role="alert">
+            <p class="font-medium">Error</p>
+            <p x-text="error"></p>
+        </div>
+
+        <!-- Recipe Result -->
+        <div x-show="recipe" x-transition class="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+            <!-- Recipe Image -->
+            <template x-if="recipe?.image_url">
+                <img :src="recipe.image_url" :alt="query" class="w-full h-96 object-cover" @error="$el.src = 'https://via.placeholder.com/800x400?text=Recipe+Image+Not+Available'">
+            </template>
+
+            <!-- Recipe Content -->
+            <div class="p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4" x-text="query"></h2>
+
+                <!-- Recipe Text -->
+                <article class="recipe-content" x-html="formatRecipe(recipe?.recipe)"></article>
+
+                <!-- Learning Resources -->
+                <template x-if="recipe?.learning_resources?.length && recipe.learning_resources.every(r => isValidUrl(r.url))">
+                    <div class="border-t pt-6 mt-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Learn More</h3>
+                        <div class="space-y-3">
+                            <template x-for="resource in recipe.learning_resources" :key="resource.url">
+                                <a :href="resource.url" 
+                                   target="_blank" 
+                                   rel="noopener noreferrer" 
+                                   @click.prevent="validateAndOpenUrl(resource.url)"
+                                   class="block p-3 border rounded-md hover:bg-gray-50 transition-colors">
+                                    <div class="flex items-center">
+                                        <span class="inline-block px-2 py-1 text-xs font-semibold text-white bg-blue-500 rounded mr-3" x-text="resource.type"></span>
+                                        <span x-text="resource.title"></span>
+                                    </div>
+                                </a>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+
+    <!-- Debug output -->
+    <div x-show="recipe" class="hidden">
+        <pre x-text="recipe?.recipe"></pre>
+    </div>
+</body>
+
+</html>
