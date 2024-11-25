@@ -61,7 +61,7 @@ A modern, AI-powered recipe generation web application that creates personalized
    ```
 
 5. **Access the application**
-   - Open `http://localhost:8000` in your browser
+   - Open `http://localhost:8080` in your browser
 
 ## 🌊 Application Flow
 
