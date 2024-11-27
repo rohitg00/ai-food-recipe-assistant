@@ -4,6 +4,8 @@ A modern, AI-powered recipe generation web application that creates personalized
 
 ![AI Food Recipe Assistant Demo](images/image.png)
 
+# [Detailed Step-by-Step Guide available here](https://lnkd.in/eGuM8d6w)
+
 ## 🌟 Features
 
 - **AI-Powered Recipe Generation**: Utilizes OpenAI GPT-3.5 to create detailed, personalized recipes
