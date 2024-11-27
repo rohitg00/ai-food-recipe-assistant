@@ -167,21 +167,33 @@
         }
     }" class="container mx-auto px-4 py-8">
         <header class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-800 mb-2">AI Recipe Assistant</h1>
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">AI Recipe Assistant</h1>
             <p class="text-gray-600">Get delicious recipes with images and cooking resources</p>
         </header>
 
-        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-6 mb-8">
-            <form @submit.prevent="getRecipe" class="space-y-4">
+        <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8 mb-8 border border-gray-100">
+            <form @submit.prevent="getRecipe" class="space-y-6">
                 <div>
-                    <label for="query" class="block text-gray-700 mb-2">What would you like to cook?</label>
-                    <input type="text" id="query" x-model.trim="query" class="w-full p-2 border rounded-md" placeholder="e.g., Chocolate chip cookies" required minlength="1">
+                    <label for="query" class="block text-gray-700 font-medium mb-2">What would you like to cook?</label>
+                    <input 
+                        type="text" 
+                        id="query" 
+                        x-model.trim="query" 
+                        class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" 
+                        placeholder="e.g., Chocolate chip cookies" 
+                        required 
+                        minlength="1"
+                    >
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-6">
                     <div>
-                        <label for="diet" class="block text-gray-700 mb-2">Dietary Preference</label>
-                        <select id="diet" x-model="dietPreference" class="w-full p-2 border rounded-md">
+                        <label for="diet" class="block text-gray-700 font-medium mb-2">Dietary Preference</label>
+                        <select 
+                            id="diet" 
+                            x-model="dietPreference" 
+                            class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        >
                             <option value="">Any</option>
                             <option value="vegetarian">Vegetarian</option>
                             <option value="vegan">Vegan</option>
@@ -191,8 +203,12 @@
                     </div>
 
                     <div>
-                        <label for="cuisine" class="block text-gray-700 mb-2">Cuisine Type</label>
-                        <select id="cuisine" x-model="cuisineType" class="w-full p-2 border rounded-md">
+                        <label for="cuisine" class="block text-gray-700 font-medium mb-2">Cuisine Type</label>
+                        <select 
+                            id="cuisine" 
+                            x-model="cuisineType" 
+                            class="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                        >
                             <option value="">Any</option>
                             <option value="italian">Italian</option>
                             <option value="mexican">Mexican</option>
@@ -203,9 +219,13 @@
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" :disabled="loading || !query.trim()">
+                <button 
+                    type="submit" 
+                    class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-6 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 font-medium" 
+                    :disabled="loading || !query.trim()"
+                >
                     <template x-if="!loading">
-                        <span>Get Recipe</span>
+                        <span>Create Recipe</span>
                     </template>
                     <template x-if="loading">
                         <div class="flex items-center justify-center">
@@ -213,7 +233,7 @@
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            <span>Generating Recipe...</span>
+                            <span>Creating Your Recipe...</span>
                         </div>
                     </template>
                 </button>
@@ -262,6 +282,47 @@
                 </template>
             </div>
         </div>
+
+        <!-- Footer with disclaimer and credits -->
+        <footer class="mt-12 mb-8 max-w-4xl mx-auto space-y-6">
+            <!-- Existing disclaimer -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                <div class="flex items-start space-x-4">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-sm font-semibold text-gray-900">Important Information</h4>
+                        <div class="mt-2 text-sm text-gray-600 space-y-1">
+                            <p>This AI recipe generator is designed for inspiration and entertainment purposes. For your safety:</p>
+                            <ul class="list-disc ml-5 space-y-1">
+                                <li>Always follow proper food safety guidelines and cooking temperatures</li>
+                                <li>Verify the safety and quality of all ingredients before use</li>
+                                <li>If you have allergies or dietary restrictions, consult healthcare professionals</li>
+                                <li>Use common sense and your best judgment when preparing any recipe</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Added credits section -->
+            <div class="text-center text-sm text-gray-500">
+                <p class="flex items-center justify-center space-x-1">
+                    <span>Made with</span>
+                    <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+                    </svg>
+                    <span>by <a href="https://github.com/rohitg00" class="text-blue-600 hover:text-blue-800 font-medium" target="_blank" rel="noopener noreferrer">Rohit Ghumare</a></span>
+                </p>
+                <p class="flex items-center justify-center space-x-1">
+                    <span>Deployed on</span>
+                    <span> <a href="https://sevalla.com" class="text-blue-600 hover:text-blue-800 font-medium" target="_blank" rel="noopener noreferrer">Sevalla</a></span>
+                </p>
+            </div>
+        </footer>
     </div>
 
     <!-- Debug output -->
