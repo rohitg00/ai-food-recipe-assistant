@@ -4,7 +4,7 @@ A modern, AI-powered recipe generation web application that creates personalized
 
 ![AI Food Recipe Assistant Demo](images/image.png)
 
-# [Detailed Step-by-Step Guide available here](https://lnkd.in/eGuM8d6w)
+# [Detailed Step-by-Step Guide available here](https://ghumare64.medium.com/host-your-first-ai-app-in-seconds-with-sevalla-bf577794b601)
 
 ## 🌟 Features
 
